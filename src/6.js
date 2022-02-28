@@ -1,31 +1,36 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./App.css";
-import { select, axisBottom, axisRight, scaleLinear, scaleBand } from "d3";
+// import "./App.css";
+import * as d3 from "d3";
 
 function App() {
   const [data, setData] = useState([25, 30, 45, 60, 20, 65, 75]);
   const svgRef = useRef(null);
 
   useEffect(() => {
-    const svg = select(svgRef.current);
-    const xScale = scaleBand()
+    const svg = d3.select(svgRef.current);
+    const xScale = d3
+      .scaleBand()
       // 범위를 똑같이 나눈다
       .domain(data.map((value, idx) => idx))
       .range([0, 300])
-      .padding(0.5)
-      .clamp(true);
+      .padding(0.5);
     // (0,0)~(6,200)
-    const yScale = scaleLinear().domain([0, 150]).range([150, 0]).clamp(true);
+    const yScale = d3
+      .scaleLinear()
+      .domain([0, 150])
+      .range([150, 0])
+      .clamp(true);
 
-    const colorScale = scaleLinear()
+    const colorScale = d3
+      .scaleLinear()
       .domain([75, 115, 150])
       .range(["green", "orange", "red"])
       .clamp(true);
-    const xAxis = axisBottom(xScale).ticks(data.length);
+    const xAxis = d3.axisBottom(xScale).ticks(data.length);
     // axais를 고정한다
     svg.select(".x-axis").style("transform", "translateY(150px)").call(xAxis);
     // 한 번만 호출 그룹 엘리먼트에 css를 적용했다.
-    const yAxis = axisRight(yScale);
+    const yAxis = d3.axisRight(yScale);
     svg.select(".y-axis").style("transform", "translateX(300px)").call(yAxis);
 
     svg
@@ -58,7 +63,7 @@ function App() {
 
   return (
     <React.Fragment>
-      <svg ref={svgRef}>
+      <svg ref={svgRef} style={{ overflow: "visible" }}>
         <g className="x-axis" />
         <g className="y-axis" />
       </svg>
